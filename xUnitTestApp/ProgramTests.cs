@@ -4,7 +4,6 @@ using Xunit;
 using Microsoft.Win32;
 using SystemAccessManager.ConsoleAppPlus;
 
-
 namespace SystemAccessManager.xUnitTestApp
 {
     public class ProgramTests
@@ -25,7 +24,6 @@ namespace SystemAccessManager.xUnitTestApp
             // Assert
             Assert.Equal(0, result);
         }
-
 
         /// <summary>
         /// This test method verifies that the CheckFirstRun method returns true when there is no registry value for the application,
@@ -66,5 +64,101 @@ namespace SystemAccessManager.xUnitTestApp
             // Assert
             Assert.False(result);
         }
+
+        /// <summary>
+        /// This test method verifies that the SetTaskManagerStatus method sets the correct registry value.
+        /// </summary>
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        public void SetTaskManagerStatus_SetsRegistryValue(int status)
+        {
+            // Act
+            Program.SetTaskManagerStatus(status);
+
+            // Assert
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(Program.RegistryKeyName))
+            {
+                var value = key.GetValue(Program.RegistryValueName);
+                Assert.Equal(status, (int)value);
+            }
+        }
+
+        /// <summary>
+        /// This test method verifies that the SetStartMenuStatus method sets the correct registry value.
+        /// </summary>
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        public void SetStartMenuStatus_SetsRegistryValue(int status)
+        {
+            // Act
+            Program.SetStartMenuStatus(status);
+
+            // Assert
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(Program.StartMenuRegistryKeyName))
+            {
+                var value = key.GetValue(Program.StartMenuRegistryValueName);
+                Assert.Equal(status, (int)value);
+            }
+        }
+
+        /// <summary>
+        /// This test method verifies that the HideStartMenu method sets the correct registry value.
+        /// </summary>
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void HideStartMenu_SetsRegistryValue(bool hide)
+        {
+            // Act
+            Program.HideStartMenu(hide);
+
+            // Assert
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(Program.StartMenuRegistryKeyName))
+            {
+                var value = key.GetValue("NoStartMenu");
+                Assert.Equal(hide ? 1 : 0, (int)value);
+            }
+        }
+
+        /// <summary>
+        /// This test method verifies that the SetTaskbarStatus method sets the correct registry value.
+        /// </summary>
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        public void SetTaskbarStatus_SetsRegistryValue(int status)
+        {
+            // Act
+            Program.SetTaskbarStatus(status);
+
+            // Assert
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(Program.StartMenuRegistryKeyName))
+            {
+                var value = key.GetValue(Program.TaskbarRegistryValueName);
+                Assert.Equal(status, (int)value);
+            }
+        }
+
+        ///// <summary>
+        ///// This test method verifies that the HideTaskbar method correctly hides and unhides the Taskbar.
+        ///// </summary>
+        //[Theory]
+        //[InlineData(true)]
+        //[InlineData(false)]
+        //public void HideTaskbar_HidesAndUnhidesTaskbar(bool hide)
+        //{
+        //    // Act
+        //    Program.HideTaskbar(hide);
+
+        //    // Assert
+        //    IntPtr taskbarHandle = Program.FindWindow("Shell_TrayWnd", null);
+        //    Assert.NotEqual(IntPtr.Zero, taskbarHandle);
+
+        //    // Assuming we have a way to check visibility status programmatically:
+        //    // bool isVisible = IsWindowVisible(taskbarHandle);
+        //    // Assert.Equal(!hide, isVisible);
+        //}
     }
 }
