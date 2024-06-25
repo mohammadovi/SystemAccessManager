@@ -1,0 +1,10 @@
+﻿<Window x:Class="AppUI.InputDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Input" Height="150" Width="300">
+    <StackPanel>
+        <Label x:Name="lblQuestion" Margin="10"/>
+        <TextBox x:Name="txtAnswer" Margin="10"/>
+        <Button Content="OK" Width="75" Margin="10" HorizontalAlignment="Center" Click="btnDialogOk_Click"/>
+    </StackPanel>
+</Window>
